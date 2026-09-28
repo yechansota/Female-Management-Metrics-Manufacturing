@@ -8,18 +8,34 @@
 
 ---
 
-### **The Short Version**
 
-Two standard ways of measuring women's representation in management point in **opposite directions** on the same federal data.
+Yechan Kim <yechansota@gmail.com>
+8:58 AM (15 minutes ago)
+to me
+
+### **Project Motivation**
+
+When organizations, researchers, and policymakers assess women's representation in management, they typically begin with one number: the percentage of managers who are women. This measure is widely used because it is easy to understand and appears in both workforce disclosures and academic research.
+ 
+However, this statistic answers only one question: **what share of management positions are held by women?**
+It does not answer a different and equally important question: **how likely is an employed woman to hold a management position relative to an employed man?**
+ 
+Because the first measure mechanically rises when more women enter the workforce, the two measures can move in opposite directions. Women's share of management can increase even while women's relative managerial representation declines.
+
+Manufacturing is where this matters most directly. First- and mid-level managers — production supervisors, shift leads, area managers — are the entry point to every tier above them. If women do not reach that tier in proportion to their presence on the floor, there is no pipeline further up.
+
+This project asks a single question of the EEOC's own data: **in U.S. manufacturing, do the absolute share and the relative odds tell the same story?** They do not.
+
+This study compares local industry cells at one point in time. It does not track individual employees, promotions, or career transitions. The results therefore describe a pattern in workforce composition, not the effect of adding more women to a workplace.
 
 | Measure | Coefficient on female share of the workforce |
 |---|---:|
 | Women's **share of** management | **+0.297*** |
 | Women's **odds of holding** management, relative to men in the same cell | **−1.175*** |
 
-Neither is wrong. They answer different questions, and reporting practice overwhelmingly uses the first.
+Neither number is wrong. They answer different questions, and reporting practice overwhelmingly uses the first.
 
-The divergence is real: it survives a fixed-margin randomization test, five weighting schemes, industry and city influence checks, and a comparison of industries *within* the same labor market. **It does not survive disclosure suppression intact.** Once the cells the EEOC withholds are bounded, the sign of the relative measure is no longer identified — and a specific, low-cost change to the release rule would restore it.
+The divergence survives a fixed-margin randomization test, five weighting schemes, industry and city influence checks, and a comparison of industries *within* the same labor market. **It does not survive disclosure suppression intact.** Once the cells the EEOC withholds are bounded, the sign of the relative measure is no longer identified — and a specific, low-cost change to the release rule would restore it.
 
 ---
 
