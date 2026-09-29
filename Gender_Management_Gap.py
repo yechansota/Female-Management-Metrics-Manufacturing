@@ -78,6 +78,12 @@ def fit(df, rhs, outcome, label="", w=None, fe=("naics3", "region"), quiet=False
     return m
 
 
+def resample_p(k, n):
+    """A resampling p-value cannot be smaller than 1/n; report the count."""
+    return (f"{k} of {n} draws as extreme (p < {1/n:.3f})" if k == 0
+            else f"{k} of {n} draws as extreme (p = {k/n:.3f})")
+
+
 def log_odds(mid_f, df, c=0.0):
     f1, f0 = mid_f + c, df.emp_f - mid_f + c
     m1 = (df.mid_tot - mid_f) + c
@@ -175,12 +181,22 @@ for lbl, v in [("central hypergeometric (no association)", randomize(1.0, REPS_R
                (f"noncentral, constant odds ratio psi={psi:.3f}",
                 randomize(psi, max(REPS_RND // 2, 100)))]:
     P(f"  {lbl:<46} null mean {v.mean():+.4f}  sd {v.std():.4f}  "
-      f"[{np.quantile(v,.025):+.4f}, {np.quantile(v,.975):+.4f}]  p={(v<=obs).mean():.4f}")
+      f"[{np.quantile(v,.025):+.4f}, {np.quantile(v,.975):+.4f}]")
+    P(f"  {'':<46} {resample_p(int((v <= obs).sum()), len(v))}")
 P(f"  {'OBSERVED':<46} {obs:+.4f}")
 P("\n  continuity-correction sensitivity (point estimate):")
 for c in [0.0, 0.25, 0.5, 1.0]:
     d = a.copy(); d["yc"] = log_odds(d.mid_f, d, c)
     P(f"    c={c:<5} b={fit(d, RHS, 'yc', quiet=True).params.fem_share:+.4f}")
+P("\n  Haldane shift (c=0.5 minus c=0) by female-share sextile:")
+hs = a.assign(shift=log_odds(a.mid_f, a, 0.5) - a.y)
+for _, row in hs.groupby(pd.qcut(hs.fem_share, 6)).agg(
+        fem=("fem_share", "mean"), shift=("shift", "mean"),
+        med=("mid_f", "median")).iterrows():
+    P(f"    female share {row.fem:.3f}  shift {row['shift']:+.4f}  "
+      f"median female managers {row.med:.0f}")
+P("  The shift is larger where female managers are few, which is the direction")
+P("  that would inflate the slope; the headline therefore uses no correction.")
 
 P("\n" + "-"*80); P("PANEL F  INFERENCE AND INFLUENCE"); P("-"*80)
 Z = absorb(a, ["y"] + RHS); X, y = sm.add_constant(Z[RHS]), Z.y
@@ -198,8 +214,16 @@ for _ in range(REPS_WCB):
     wm = dict(zip(sorted(a.naics3.unique()), rng.choice([-1, 1], size=a.naics3.nunique())))
     ts.append(sm.OLS(rr.fittedvalues + rr.resid * a.naics3.map(wm).values, X).fit(
         cov_type="cluster", cov_kwds={"groups": a.naics3}).tvalues.fem_share)
-P(f"  wild cluster bootstrap over 21 industries ({REPS_WCB} reps): "
-  f"p = {(np.abs(ts) >= abs(t0)).mean():.4f}")
+P(f"  wild cluster bootstrap over 21 industries: "
+  f"{resample_p(int((np.abs(ts) >= abs(t0)).sum()), len(ts))}")
+P("  coefficient across sequential controls:")
+for cols, lbl in [(["fem_share"], "fixed effects only"),
+                  (["fem_share", "ln_emp"], "+ ln_emp"),
+                  (RHS, "+ ln_estab_size"),
+                  (RHS + ["mgmt_intensity"], "+ mgmt_intensity"),
+                  (RHS + ["mgmt_intensity", "sep_rate_all"], "+ mobility")]:
+    dd = a.dropna(subset=["y"] + cols)
+    P(f"    {lbl:<22} b={fit(dd, cols, 'y', quiet=True).params.fem_share:+.4f}  n={len(dd):,}")
 li = sorted((fit(a[a.naics3 != j], RHS, "y", quiet=True).params.fem_share, j)
             for j in a.naics3.unique())
 P(f"  leave-one-industry-out: [{li[0][0]:+.4f} (drop {li[0][1]}), "
@@ -291,6 +315,15 @@ for lbl, z in [("QWI", zq), ("lagged", zl)]:
     rf = sm.OLS(yt, sm.add_constant(z)).fit().params[1]
     P(f"  {lbl:<8} first stage {pi:+.4f}  reduced form {rf:+.4f}  "
       f"direct effect reaching b=-0.50 needs {abs((rf+0.5*pi)/rf)*100:.0f}% of the reduced form")
+P("  first-stage coefficient on the QWI instrument across control sets:")
+for cols, lbl in [([], "fixed effects only"), (["ln_emp"], "+ ln_emp"),
+                  (["ln_emp", "ln_estab_size"], "+ ln_estab_size"),
+                  (["ln_emp", "ln_estab_size", "mgmt_intensity"], "+ mgmt_intensity")]:
+    Zc = absorb(d, ["fem_share_eeo1", "fem_share"] + cols)
+    CC = sm.add_constant(Zc[cols]) if cols else np.ones((len(Zc), 1))
+    xr = np.asarray(sm.OLS(Zc.fem_share_eeo1, CC).fit().resid)
+    zr = np.asarray(sm.OLS(Zc.fem_share, CC).fit().resid)
+    P(f"    {lbl:<20} pi={sm.OLS(xr, sm.add_constant(zr)).fit().params[1]:+.4f}")
 P("  Both instruments plausibly violate the exclusion restriction through the same")
 P("  persistent local industry structure, so the overidentification test has little")
 P("  power against it. These results bound measurement error only.")
@@ -303,6 +336,9 @@ r1["cell"] = r1.cbsa_code.astype(str) + "|" + r1.naics3.astype(str)
 for v in ["y", "fem_share_eeo1"]:
     wi = (r1[v] - r1.groupby("cell")[v].transform("mean")).var() / r1[v].var()
     P(f"    within-cell variance share, {v:<18} {wi*100:.1f}%")
+bal = r1.groupby("cell").year.nunique()
+P(f"    cells observed in all 7 years: {(bal == 7).sum():,} of {len(bal):,} "
+  f"({(bal == 7).mean()*100:.1f}%)")
 P("    The regressor moves 4.9% within cells, so no cell fixed-effects estimator")
 P("    is reported: it would remove the signal and keep the noise.")
 m = fit(a, ["sep_rate_all"] + RHS, "y", quiet=True)
@@ -399,6 +435,17 @@ P(f"    illustration, median cell ({ef:.0f} women employed): "
   f"{ef*rf0:.1f} -> {ef*rf0*kf:.1f} women in mid-management")
 P("    The illustration holds female employment fixed while moving the share;")
 P("    it describes the cross-sectional association, not a predicted effect.")
+
+P("\n  J6  establishment size: artefact or selection?")
+e_all = fit(a, RHS, "y", quiet=True).params.ln_estab_size
+e_big = fit(a[a.emp >= a.emp.median()], RHS, "y", quiet=True).params.ln_estab_size
+e_r1 = fit(r1, ["fem_share_eeo1", "ln_emp", "ln_estab_size"], "y", quiet=True,
+           fe=("naics3", "region", "yr")).params.ln_estab_size
+P(f"    full sample {e_all:+.4f} | 2015-2021 regime {e_r1:+.4f} | "
+  f"large cells only (employment >= median) {e_big:+.4f}")
+P(f"    stable across the filing regimes despite a 2x change in reporting-unit size,")
+P(f"    so not purely a reporting artefact; shrinks {(1 - e_big/e_all)*100:.0f}% in large cells,")
+P("    so part of it is selection. No mechanism is proposed.")
 
 with open("results_log.txt", "w") as fh:
     fh.write("\n".join(LOG) + "\n")
