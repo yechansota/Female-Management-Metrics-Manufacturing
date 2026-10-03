@@ -5,7 +5,7 @@
  The Two Faces of Women's Managerial Representation in Manufacturing
  Sean (Yechan) Kim  |  Georgia Tech OMSA
 --------------------------------------------------------------------------------
- Reproduces results_log.txt (Panels A-J) from the two shipped datasets. Figures are built
+ Reproduces results_log.txt (Panels A-L) from the two shipped datasets. Figures are built
  separately by make_figures.py. No raw federal files, no network access.
 
      python Gender_Management_Gap.py
@@ -30,6 +30,7 @@ from scipy import stats
 warnings.filterwarnings("ignore")
 
 CROSS_SECTION, PANEL = "gender_mgmt_cbsa_2023.csv", "gender_mgmt_panel_2015_2021.csv"
+ACS_CELLS = "acs_mfg_cells_2022_2024.csv"   # IPUMS USA ACS, aggregated to metro x industry x year
 TAU      = 3      # EEOC suppression threshold, recovered empirically
 REPS_RND = 200    # fixed-margin randomization replications
 REPS_WCB = 499    # wild cluster bootstrap replications
@@ -446,6 +447,151 @@ P(f"    full sample {e_all:+.4f} | 2015-2021 regime {e_r1:+.4f} | "
 P(f"    stable across the filing regimes despite a 2x change in reporting-unit size,")
 P(f"    so not purely a reporting artefact; shrinks {(1 - e_big/e_all)*100:.0f}% in large cells,")
 P("    so part of it is selection. No mechanism is proposed.")
+
+
+# ============================================================ Panel K
+P("\n" + "-"*80)
+P("PANEL K  JOB-LADDER POSITION  (is the gap about where each sex sits in the plant?)")
+P("-"*80)
+JOBS = ["prof", "tech", "sales", "admin", "craft", "oper", "labor", "serv"]
+for j in JOBS:
+    a[f"{j}_m"] = a[f"{j}_tot"] - a[f"{j}_f"]
+P("  EEO-1 also reports professionals, technicians, sales, administrative support,")
+P("  craft, operatives, laborers and service workers by sex. Small counts in")
+P("  these categories are suppressed, so each test runs on the cells where the")
+P("  categories it needs are published, and is compared with the main")
+P("  specification ON THE SAME CELLS.")
+for j, nm in zip(JOBS, ["professionals", "technicians", "sales", "admin support",
+                        "craft", "operatives", "laborers", "service"]):
+    P(f"    female count published, {nm:<14} {a[f'{j}_f'].notna().mean()*100:5.1f}% of cells")
+fl = a.dropna(subset=["oper_f", "labor_f", "oper_tot", "labor_tot"]).copy()
+fl["w_floor"] = (fl.oper_f + fl.labor_f) / fl.emp_f
+fl["m_floor"] = (fl.oper_m + fl.labor_m) / (fl.emp - fl.emp_f)
+P("\n  share of each sex working as operatives or laborers (the production floor):")
+for k, g in fl.groupby(pd.qcut(fl.fem_share, 3, labels=["low female share", "middle", "high female share"])):
+    P(f"    {k:<18} women {g.w_floor.median()*100:5.1f}%   men {g.m_floor.median()*100:5.1f}%   cells {len(g):,}")
+P("  In male-dominated cells the women present are less often on the floor than")
+P("  men -- more often in office and technical roles closer to management.")
+P("\n  K1  controlling for where each sex sits")
+b0 = fit(fl, RHS, "y", quiet=True); b1 = fit(fl, RHS + ["w_floor", "m_floor"], "y", quiet=True)
+P(f"    same cells, main specification              b={b0.params.fem_share:+.4f}  n={int(b0.nobs):,}")
+P(f"    + women's and men's floor shares            b={b1.params.fem_share:+.4f}  t={b1.tvalues.fem_share:+.2f}"
+  f"   ({(1-b1.params.fem_share/b0.params.fem_share)*100:.0f}% of the coefficient)")
+sk = a.dropna(subset=["prof_f", "tech_f", "craft_f", "oper_f", "labor_f"]).copy()
+sk["w_floor"] = (sk.oper_f + sk.labor_f) / sk.emp_f
+sk["m_floor"] = (sk.oper_m + sk.labor_m) / (sk.emp - sk.emp_f)
+sk["w_skill"] = (sk.prof_f + sk.tech_f + sk.craft_f) / sk.emp_f
+sk["m_skill"] = (sk.prof_m + sk.tech_m + sk.craft_m) / (sk.emp - sk.emp_f)
+b0 = fit(sk, RHS, "y", quiet=True)
+b1 = fit(sk, RHS + ["w_floor", "m_floor", "w_skill", "m_skill"], "y", quiet=True)
+P(f"    same cells, main specification              b={b0.params.fem_share:+.4f}  n={int(b0.nobs):,}")
+P(f"    + floor and skilled-pipeline shares         b={b1.params.fem_share:+.4f}  t={b1.tvalues.fem_share:+.2f}"
+  f"   ({(1-b1.params.fem_share/b0.params.fem_share)*100:.0f}% of the coefficient)")
+P("\n  K2  comparing managers only with the tier immediately below")
+for cats, lbl in [(["prof", "tech", "craft"], "professionals + technicians + craft"),
+                  (["oper", "labor"], "operatives + laborers")]:
+    dk = a.dropna(subset=[f"{c}_f" for c in cats] + [f"{c}_tot" for c in cats]).copy()
+    Fp = sum(dk[f"{c}_f"] for c in cats); Mp = sum(dk[f"{c}_m"] for c in cats)
+    dk["yp"] = np.log((dk.mid_f / Fp) / ((dk.mid_tot - dk.mid_f) / Mp))
+    dk = dk[np.isfinite(dk.yp)]
+    mp = fit(dk, RHS, "yp", quiet=True); mb = fit(dk, RHS, "y", quiet=True)
+    P(f"    managers per {lbl:<36} b={mp.params.fem_share:+.4f}  t={mp.tvalues.fem_share:+.2f}"
+      f"   same cells, main {mb.params.fem_share:+.4f}  n={int(mp.nobs):,}")
+P("  Roughly half to two-thirds of the association is accounted for by where women")
+P("  and men sit in the job ladder; a smaller remainder is negative in every test.")
+P("  Job-ladder position may itself be part of how the gap arises, so the controlled")
+P("  coefficient splits the association rather than isolating a 'true' effect.")
+
+# ============================================================ Panel L
+P("\n" + "-"*80)
+P("PANEL L  A SECOND, INDEPENDENT SOURCE: ACS 2022-2024 (IPUMS USA)")
+P("-"*80)
+acs = load(ACS_CELLS)
+num = ["n", "sum_w", "sum_w2", "F", "M", "Fm_a", "Mm_a", "Fm_b", "Mm_b",
+       "nF", "nM", "nFm_a", "nMm_a", "nFm_b", "nMm_b"]
+
+
+def acs_cells(df, k):
+    g = df.groupby(["met2013", "naics3", "region"], as_index=False)[num].sum()
+    g["cbsa_code"] = g.met2013.astype(str)
+    g["Fm"], g["Mm"] = g[f"Fm_{k}"], g[f"Mm_{k}"]
+    g["nFm"], g["nMm"] = g[f"nFm_{k}"], g[f"nMm_{k}"]
+    g["nFo"], g["nMo"] = g.nF - g.nFm, g.nM - g.nMm
+    g["fem_share"] = g.F / (g.F + g.M)
+    g["mgmt_fem_share"] = g.Fm / (g.Fm + g.Mm)
+    g["y"] = np.log((g.Fm / (g.F - g.Fm)) / (g.Mm / (g.M - g.Mm)))
+    g["rate_f"], g["rate_m"] = np.log(g.Fm / g.F), np.log(g.Mm / g.M)
+    g["mgmt_int"] = np.log((g.Fm + g.Mm) / (g.F + g.M))
+    g["ln_emp"] = np.log(g.F + g.M)
+    g["prec"] = 1 / (1/g.nFm + 1/g.nMm + 1/g.nFo + 1/g.nMo)
+    g["deff"] = g.n * g.sum_w2 / g.sum_w**2
+    g["wt_emp"] = g.F + g.M
+    return g
+
+
+def usable(g, nmin=50):
+    return g[(g.n >= nmin) & (g.nFm >= 3) & (g.nMm >= 3) & (g.nFo > 0) & (g.nMo > 0)
+             & np.isfinite(g.y)].copy()
+
+
+RA = ["fem_share", "ln_emp"]      # ACS has no establishment size
+LA = usable(acs_cells(acs, "a"))
+P("  Census survey of individuals: not subject to the EEOC suppression rule, the")
+P("  100-employee threshold, or employer job classification. Private wage and")
+P("  salary workers, employed, in manufacturing. Metro is place of RESIDENCE.")
+P("  Manager = management occupations (SOC 11, chief executives excluded) plus")
+P("  first-line supervisors, to mirror EEO-1 first/mid-level management.")
+P(f"  usable cells (>=50 respondents, >=3 female and >=3 male managers): {len(LA):,} "
+  f"in {LA.met2013.nunique()} metros; median {LA.n.median():.0f} respondents per cell")
+
+
+def L(df, yv, lbl, w=None):
+    m_ = fit(df, RA, yv, w=w, quiet=True)
+    P(f"    {lbl:<50} b={m_.params.fem_share:+.4f}  se={m_.bse.fem_share:.4f}  "
+      f"t={m_.tvalues.fem_share:+.2f}  n={int(m_.nobs):,}")
+    return m_
+
+P("\n  L1  the divergence  (EEO-1: absolute +0.297, relative -1.175)")
+L(LA, "mgmt_fem_share", "absolute: women's share of managers")
+L(LA, "y", "relative: log odds, women vs men")
+P("\n  L2  decomposition")
+for mgr, lbl in [("a", "management + first-line supervisors"), ("b", "management occupations only")]:
+    G = LA if mgr == "a" else usable(acs_cells(acs, "b"))
+    P(f"    manager definition: {lbl}  ({len(G):,} cells)")
+    for yv, nm in [("y", "relative log odds"), ("rate_f", "female management rate"),
+                   ("rate_m", "male management rate"), ("mgmt_int", "overall management intensity")]:
+        L(G, yv, "  " + nm)
+P("  Common to both sources: relative odds fall, men's management rate rises, and")
+P("  the managerial layer does not shrink. Women's rate falls clearly only in EEO-1;")
+P("  in ACS the management layer grows. The decomposition is source-dependent.")
+P("\n  L3  robustness of the relative measure")
+L(LA, "y", "inverse-variance weighted", w="prec")
+L(LA, "y", "employment-weighted", w="wt_emp")
+for k in (100, 200):
+    L(usable(acs_cells(acs, "a"), k), "y", f"cells with >= {k} respondents")
+A24 = usable(acs_cells(acs[acs.year == 2024], "a"))
+L(A24, "y", "2024 alone, relative")
+L(A24, "mgmt_fem_share", "2024 alone, absolute")
+P("\n  L4  can the two sources be compared cell by cell?")
+ee = a.assign(met2013=pd.to_numeric(a.cbsa_code, errors="coerce"))
+jn = LA.merge(ee[["met2013", "naics3", "fem_share_eeo1", "mid_fem_share", "y"]]
+              .rename(columns={"y": "y_eeo", "mid_fem_share": "mgmt_share_eeo"}),
+              on=["met2013", "naics3"], how="inner")
+P(f"    cells present in both: {len(jn):,}")
+P(f"    correlation, female share of workforce    {jn.fem_share.corr(jn.fem_share_eeo1):.3f}")
+P(f"    correlation, female share of managers     {jn.mgmt_fem_share.corr(jn.mgmt_share_eeo):.3f}")
+P(f"    correlation, relative log odds            {jn.y.corr(jn.y_eeo):.3f}")
+tv = LA.y.var()
+for lbl, sv in [("ignoring the survey weights", (1 / LA.prec).mean()),
+                ("with the weighting design effect", (LA.deff / LA.prec).mean())]:
+    rel = max(1 - sv / tv, 0)
+    P(f"    sampling noise, {lbl:<33} {min(sv/tv, 1)*100:4.0f}% of cell variance; "
+      f"correlation ceiling {np.sqrt(rel):.2f}")
+P(f"    median weighting design effect per cell: {LA.deff.median():.2f}")
+P("  Individual ACS cells are almost entirely sampling noise, so the weak cell-level")
+P("  agreement is what noise alone would produce. The two sources can be compared")
+P("  only in aggregate, where they agree on direction. The household-clustering")
+P("  component is not included; it would add noise, not remove it.")
 
 with open("results_log.txt", "w") as fh:
     fh.write("\n".join(LOG) + "\n")

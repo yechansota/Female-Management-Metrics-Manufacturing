@@ -1,0 +1,336 @@
+================================================================================
+REINTERPRETING WOMEN'S LEADERSHIP METRICS
+Absolute share vs relative odds of women's managerial representation, U.S. manufacturing
+EEO-1 2022-2023 main cross-section; 2015-2021 comparison under a different filing regime
+Cross-sectional ecological association. No causal interpretation is warranted.
+================================================================================
+
+[ESTIMAND] unweighted = the average CBSA x NAICS-3 cell (see Panel D)
+[SAMPLE]   2,779 cells, 526 CBSAs, 21 subsectors
+[BOUNDED]  275 cells suppressed, counts known to lie in [0,2]
+[OUTCOME]  ln_theta, no continuity correction; zero-female-manager cells: 0
+           mean -0.172  sd 0.472  below parity 67.8%
+
+--------------------------------------------------------------------------------
+PANEL A  RELATIVE REPRESENTATION ODDS
+--------------------------------------------------------------------------------
+
+A1  main specification, unweighted
+  outcome=y  n=2,779  clusters=526  R2(within)=0.0907
+    fem_share           -1.1747  se 0.1599  t   -7.35  p 2.009e-13 ***
+    ln_emp              +0.0180  se 0.0087  t   +2.06  p 0.03917 **
+    ln_estab_size       -0.1443  se 0.0162  t   -8.91  p 5.262e-19 ***
+
+A2  female share measured from EEO-1
+  outcome=y  n=2,779  clusters=526  R2(within)=0.1633
+    fem_share_eeo1      -2.0297  se 0.1174  t  -17.28  p 6.425e-67 ***
+    ln_emp              +0.0261  se 0.0089  t   +2.95  p 0.003177 ***
+    ln_estab_size       -0.1245  se 0.0161  t   -7.72  p 1.187e-14 ***
+
+--------------------------------------------------------------------------------
+PANEL B  ABSOLUTE SHARE  (the divergence)
+--------------------------------------------------------------------------------
+
+B1  women's share OF management
+  outcome=mid_fem_share  n=2,779  clusters=526  R2(within)=0.1210
+    fem_share           +0.2971  se 0.0369  t   +8.04  p 8.678e-16 ***
+    ln_emp              +0.0078  se 0.0018  t   +4.28  p 1.83e-05 ***
+    ln_estab_size       -0.0134  se 0.0030  t   -4.48  p 7.566e-06 ***
+
+B2  regime 1, same specification
+  outcome=mid_fem_share  n=12,764  clusters=538  R2(within)=0.3561
+    fem_share_eeo1      +0.5645  se 0.0171  t  +32.98  p 1.523e-238 ***
+    ln_emp              +0.0090  se 0.0013  t   +6.88  p 5.961e-12 ***
+    ln_estab_size       -0.0258  se 0.0026  t   -9.94  p 2.831e-23 ***
+
+--------------------------------------------------------------------------------
+PANEL C  DECOMPOSITION  (what actually moves)
+--------------------------------------------------------------------------------
+
+C1  log female management rate  (F mgr / F employed)
+  outcome=rate_f  n=2,779  clusters=526  R2(within)=0.1365
+    fem_share           -0.8325  se 0.1459  t   -5.71  p 1.163e-08 ***
+    ln_emp              +0.0983  se 0.0099  t   +9.89  p 4.488e-23 ***
+    ln_estab_size       -0.2975  se 0.0183  t  -16.30  p 1.065e-59 ***
+
+C2  log male   management rate  (M mgr / M employed)
+  outcome=rate_m  n=2,779  clusters=526  R2(within)=0.0986
+    fem_share           +0.2210  se 0.0708  t   +3.12  p 0.001805 ***
+    ln_emp              +0.0792  se 0.0068  t  +11.60  p 4.349e-31 ***
+    ln_estab_size       -0.1670  se 0.0124  t  -13.49  p 1.727e-41 ***
+
+C3  log overall management intensity  (all mgr / all employed)
+  outcome=mgmt_int  n=2,779  clusters=526  R2(within)=0.1218
+    fem_share           -0.0898  se 0.0721  t   -1.25  p 0.2129 
+    ln_emp              +0.0837  se 0.0069  t  +12.12  p 8.405e-34 ***
+    ln_estab_size       -0.2005  se 0.0127  t  -15.82  p 2.383e-56 ***
+
+  female rate -0.8325 minus male rate +0.2210 = -1.0535, against the direct odds estimate -1.1747
+  The managerial layer does not thin. Positions are reallocated, not removed.
+
+--------------------------------------------------------------------------------
+PANEL D  ESTIMAND AND SCALE  (different questions, not robustness)
+--------------------------------------------------------------------------------
+  unweighted: the average local industry cell      b= -1.1747 se=0.1599
+  employment-weighted: the average worker          b= -0.6058 se=0.1927
+  female-employment-weighted: the average woman    b= -0.5185 se=0.1899
+  manager-weighted: the average managerial position b= -0.4212 se=0.1630
+  inverse-variance weighted: precision             b= -0.4046 se=0.1733
+
+  minimum mid-management headcount >= 10            b= -1.1747 se=0.1599  n=2,779
+  minimum mid-management headcount >= 20            b= -1.0311 se=0.1518  n=2,632
+  minimum mid-management headcount >= 50            b= -0.8505 se=0.1622  n=1,944
+  minimum mid-management headcount >= 100           b= -0.6621 se=0.1599  n=1,284
+  minimum mid-management headcount >= 200           b= -0.4180 se=0.1517  n=799
+  Sign is stable; magnitude spans roughly -0.4 to -1.2. Headline claims are
+  about direction and shape, not about effect size.
+
+--------------------------------------------------------------------------------
+PANEL E  FIXED-MARGIN RANDOMIZATION
+--------------------------------------------------------------------------------
+  All four cell margins are held fixed; only the sex-management association is
+  removed. EEO-1 cells are administrative enumerations, not samples, so this
+  randomization -- not a binomial sampling model -- is the correct null.
+  central hypergeometric (no association)        null mean -0.0035  sd 0.0778  [-0.1497, +0.1424]
+                                                 0 of 200 draws as extreme (p < 0.005)
+  noncentral, constant odds ratio psi=0.842      null mean -0.0148  sd 0.0806  [-0.1828, +0.1352]
+                                                 0 of 100 draws as extreme (p < 0.010)
+  OBSERVED                                       -1.1747
+
+  continuity-correction sensitivity (point estimate):
+    c=0.0   b=-1.1747
+    c=0.25  b=-1.2004
+    c=0.5   b=-1.2241
+    c=1.0   b=-1.2661
+
+  Haldane shift (c=0.5 minus c=0) by female-share sextile:
+    female share 0.145  shift +0.0452  median female managers 8
+    female share 0.213  shift +0.0299  median female managers 16
+    female share 0.257  shift +0.0260  median female managers 20
+    female share 0.309  shift +0.0199  median female managers 26
+    female share 0.366  shift +0.0187  median female managers 25
+    female share 0.480  shift +0.0140  median female managers 30
+  The shift is larger where female managers are few, which is the direction
+  that would inflate the slope; the headline therefore uses no correction.
+
+--------------------------------------------------------------------------------
+PANEL F  INFERENCE AND INFLUENCE
+--------------------------------------------------------------------------------
+  homoskedastic                      b=-1.1747 se=0.0922 t=-12.75 p=3.3e-36
+  cluster: CBSA                      b=-1.1747 se=0.1599 t=-7.35 p=2.01e-13
+  cluster: NAICS-3 (21 clusters)     b=-1.1747 se=0.1742 t=-6.74 p=1.56e-11
+  wild cluster bootstrap over 21 industries: 0 of 499 draws as extreme (p < 0.002)
+  coefficient across sequential controls:
+    fixed effects only     b=-1.2134  n=2,779
+    + ln_emp               b=-1.1886  n=2,779
+    + ln_estab_size        b=-1.1747  n=2,779
+    + mgmt_intensity       b=-1.1899  n=2,779
+    + mobility             b=-1.1821  n=2,779
+  leave-one-industry-out: [-1.2544 (drop 325), -1.0935 (drop 336)]
+  leave-one-CBSA-out, 20 largest: [-1.2401, -1.1647]
+
+--------------------------------------------------------------------------------
+PANEL G  SHARP WORST-CASE BOUNDS UNDER SUPPRESSION
+--------------------------------------------------------------------------------
+  Suppression is a deterministic threshold rule, so a selection model with an
+  exclusion restriction is inapplicable. OLS is linear in y, so the exact
+  bounds follow in closed form from the FWL weights -- equivalent to searching
+  all 3^275 admissible assignments.
+  Bounds require a continuity correction: a suppressed cell may truly hold zero
+  female managers, at which the uncorrected statistic diverges.
+    c=0.25  sharp set [-2.0073, +0.3496]  width 2.3569   <-- sign NOT identified
+    c=0.5   sharp set [-1.8582, -0.0772]  width 1.7810
+    c=1.0   sharp set [-1.7574, -0.4814]  width 1.2759
+  The sign of the coefficient is not identified once suppressed cells are
+  bounded and the correction is small. This is a property of the published
+  data, not of the estimator.
+  Cells where TOTAL1_2 is also suppressed hold at most 2 managers in total,
+  so the mid_tot>=10 filter excludes them by construction, not by convenience.
+
+  Counterfactual release rule: flag true zeros separately from counts of 1-2.
+  Publishing the [0,2] bounds would add nothing -- they are already implied by
+  the rule. What cannot be recovered is whether a withheld count is 0 or 1-2,
+  and the zero case is what makes the lower bound diverge as c -> 0.
+    c=0.0   current diverges                zeros flagged [-1.4618, -0.6687]  width 0.7931
+    c=0.25  current [-2.0073, +0.3496]      zeros flagged [-1.4696, -0.7822]  width 0.6874
+    c=0.5   current [-1.8582, -0.0772]      zeros flagged [-1.4814, -0.8717]  width 0.6097
+    c=1.0   current [-1.7574, -0.4814]      zeros flagged [-1.5089, -1.0066]  width 0.5023
+  With zeros flagged the sign is identified at every correction, the set narrows
+  roughly threefold, and dependence on the correction largely disappears.
+
+--------------------------------------------------------------------------------
+PANEL H  MEASUREMENT-ERROR SENSITIVITY  (not causal identification)
+--------------------------------------------------------------------------------
+  n=2,125  clusters=426
+  QWI female share       first-stage F=    45.1   2SLS b=-2.1100 (se 0.3736)
+  lagged EEO-1 2015-21   first-stage F= 2,055.6   2SLS b=-1.8857 (se 0.1553)
+  both                   first-stage F= 1,351.1   2SLS b=-1.9150 (se 0.1496)
+  Anderson-Rubin 95% set: [-2.240, -1.620]
+  QWI      first stage +0.4344  reduced form -0.9167  direct effect reaching b=-0.50 needs 76% of the reduced form
+  lagged   first stage +0.7871  reduced form -1.4843  direct effect reaching b=-0.50 needs 73% of the reduced form
+  first-stage coefficient on the QWI instrument across control sets:
+    fixed effects only   pi=+0.4385
+    + ln_emp             pi=+0.4344
+    + ln_estab_size      pi=+0.4344
+    + mgmt_intensity     pi=+0.4327
+  Both instruments plausibly violate the exclusion restriction through the same
+  persistent local industry structure, so the overidentification test has little
+  power against it. These results bound measurement error only.
+
+--------------------------------------------------------------------------------
+PANEL I  REGIME 1, AND WHAT IS NOT ESTIMATED
+--------------------------------------------------------------------------------
+
+I1  regime 1, 2015-2021 (76.5% cell overlap; a different filing regime, not an independent sample)
+  outcome=y  n=12,764  clusters=538  R2(within)=0.1855
+    fem_share_eeo1      -2.3054  se 0.1022  t  -22.55  p 1.257e-112 ***
+    ln_emp              +0.0527  se 0.0080  t   +6.57  p 5.073e-11 ***
+    ln_estab_size       -0.1675  se 0.0176  t   -9.52  p 1.686e-21 ***
+    within-cell variance share, y                  22.2%
+    within-cell variance share, fem_share_eeo1     4.9%
+    cells observed in all 7 years: 1,019 of 2,758 (36.9%)
+    The regressor moves 4.9% within cells, so no cell fixed-effects estimator
+    is reported: it would remove the signal and keep the noise.
+
+  Pre-specified test, retained for the record: external mobility b=-0.0547 (p=0.491). The monopsony hypothesis this project began with is not supported.
+
+--------------------------------------------------------------------------------
+PANEL J  VALIDITY, SPECIFICATION AND SCALE
+--------------------------------------------------------------------------------
+
+  J1  internal consistency of the EEO-1 counts (full frame, observed + bounded)
+    female managers > female employed    violations: 0
+    all managers > all employed          violations: 0
+    female managers > all managers       violations: 0
+    female employed > all employed       violations: 0
+    male managers > male employed        violations: 0
+    derived male managers < 0            violations: 0
+    derived male employed < 0            violations: 0
+    management intensity: median 0.097, p1 0.040, p99 0.232
+
+  J2  joint significance of the fixed effects
+    industry (20 indicators)   F= 11.91  df=(20,2751)  p=0   fem_share without it -1.2594
+    region (4 indicators)      F=  7.68  df=(4,2751)  p=3.79e-06   fem_share without it -1.1563
+    Both sets are jointly significant; neither is dead weight.
+
+  J3  CBSA fixed effects: comparing industries WITHIN the same labor market
+    singleton CBSAs dropped 149; 2,630 cells in 377 CBSAs remain
+    industry + region (main spec, same sample)   b=-1.1142  se=0.1602  t=-6.95
+    CBSA                                         b=-1.1311  se=0.1118  t=-10.12
+    industry + CBSA, two-way                     b=-0.9987  se=0.1735  t=-5.76
+    within-(industry+CBSA) share of female-share variance: 41.3%
+    Every market-level confounder is absorbed. About 90% of the association
+    survives the within-market comparison; about 10% runs through market-level
+    factors. Singletons are disproportionately small markets, where Panel D
+    shows the association is strongest, so this is kept as a robustness check.
+
+  J4  numerical stability
+    condition number: raw 163.6 | standardized 22.6 | fixed effects absorbed 13.7
+    VIF fem_share 1.014  ln_emp 1.367  ln_estab_size 1.352
+    standardized refit: t -12.69 vs raw -12.69; R2 0.2224 vs 0.2224 (homoskedastic, dummies)
+    standardized coefficient: 1 SD of female share (0.117) shifts ln_theta by -0.1373
+
+  J5  economic magnitude of the main coefficient
+    female share  p10 0.161  p25 0.214  p75 0.365  p90 0.433
+    +10 percentage points  odds ratio x 0.889  (-11.1%)
+    p25 -> p75             odds ratio x 0.837  (-16.3%)
+    p10 -> p90             odds ratio x 0.727  (-27.3%)
+    median management rate: women 8.73%, men 10.11%
+    across the IQR: women 8.73% -> 7.70%, men 10.11% -> 10.45%
+    illustration, median cell (254 women employed): 22.2 -> 19.5 women in mid-management
+    The illustration holds female employment fixed while moving the share;
+    it describes the cross-sectional association, not a predicted effect.
+
+  J6  establishment size: artefact or selection?
+    full sample -0.1443 | 2015-2021 regime -0.1675 | large cells only (employment >= median) -0.0936
+    stable across the filing regimes despite a 2x change in reporting-unit size,
+    so not purely a reporting artefact; shrinks 35% in large cells,
+    so part of it is selection. No mechanism is proposed.
+
+--------------------------------------------------------------------------------
+PANEL K  JOB-LADDER POSITION  (is the gap about where each sex sits in the plant?)
+--------------------------------------------------------------------------------
+  EEO-1 also reports professionals, technicians, sales, administrative support,
+  craft, operatives, laborers and service workers by sex. Small counts in
+  these categories are suppressed, so each test runs on the cells where the
+  categories it needs are published, and is compared with the main
+  specification ON THE SAME CELLS.
+    female count published, professionals   86.9% of cells
+    female count published, technicians     58.3% of cells
+    female count published, sales           62.0% of cells
+    female count published, admin support   90.8% of cells
+    female count published, craft           53.5% of cells
+    female count published, operatives      90.8% of cells
+    female count published, laborers        76.0% of cells
+    female count published, service         17.0% of cells
+
+  share of each sex working as operatives or laborers (the production floor):
+    low female share   women  42.1%   men  52.6%   cells 669
+    middle             women  50.1%   men  52.9%   cells 668
+    high female share  women  51.4%   men  52.3%   cells 669
+  In male-dominated cells the women present are less often on the floor than
+  men -- more often in office and technical roles closer to management.
+
+  K1  controlling for where each sex sits
+    same cells, main specification              b=-0.9279  n=2,006
+    + women's and men's floor shares            b=-0.5168  t=-4.46   (44% of the coefficient)
+    same cells, main specification              b=-0.7066  n=1,027
+    + floor and skilled-pipeline shares         b=-0.2232  t=-2.20   (68% of the coefficient)
+
+  K2  comparing managers only with the tier immediately below
+    managers per professionals + technicians + craft  b=-0.4130  t=-3.02   same cells, main -0.8323  n=1,136
+    managers per operatives + laborers                b=-1.4456  t=-5.37   same cells, main -0.9279  n=2,006
+  Roughly half to two-thirds of the association is accounted for by where women
+  and men sit in the job ladder; a smaller remainder is negative in every test.
+  Job-ladder position may itself be part of how the gap arises, so the controlled
+  coefficient splits the association rather than isolating a 'true' effect.
+
+--------------------------------------------------------------------------------
+PANEL L  A SECOND, INDEPENDENT SOURCE: ACS 2022-2024 (IPUMS USA)
+--------------------------------------------------------------------------------
+  Census survey of individuals: not subject to the EEOC suppression rule, the
+  100-employee threshold, or employer job classification. Private wage and
+  salary workers, employed, in manufacturing. Metro is place of RESIDENCE.
+  Manager = management occupations (SOC 11, chief executives excluded) plus
+  first-line supervisors, to mirror EEO-1 first/mid-level management.
+  usable cells (>=50 respondents, >=3 female and >=3 male managers): 937 in 178 metros; median 136 respondents per cell
+
+  L1  the divergence  (EEO-1: absolute +0.297, relative -1.175)
+    absolute: women's share of managers                b=+0.7477  se=0.0604  t=+12.37  n=937
+    relative: log odds, women vs men                   b=-1.5987  se=0.3843  t=-4.16  n=937
+
+  L2  decomposition
+    manager definition: management + first-line supervisors  (937 cells)
+      relative log odds                                b=-1.5987  se=0.3843  t=-4.16  n=937
+      female management rate                           b=-0.4941  se=0.2597  t=-1.90  n=937
+      male management rate                             b=+0.7593  se=0.1815  t=+4.18  n=937
+      overall management intensity                     b=+0.4351  se=0.1518  t=+2.87  n=937
+    manager definition: management occupations only  (772 cells)
+      relative log odds                                b=-2.0074  se=0.3818  t=-5.26  n=772
+      female management rate                           b=-0.3752  se=0.2875  t=-1.31  n=772
+      male management rate                             b=+1.3315  se=0.2409  t=+5.53  n=772
+      overall management intensity                     b=+0.9126  se=0.2001  t=+4.56  n=772
+  Common to both sources: relative odds fall, men's management rate rises, and
+  the managerial layer does not shrink. Women's rate falls clearly only in EEO-1;
+  in ACS the management layer grows. The decomposition is source-dependent.
+
+  L3  robustness of the relative measure
+    inverse-variance weighted                          b=-0.9697  se=0.2846  t=-3.41  n=937
+    employment-weighted                                b=-1.0867  se=0.3055  t=-3.56  n=937
+    cells with >= 100 respondents                      b=-0.8784  se=0.4090  t=-2.15  n=617
+    cells with >= 200 respondents                      b=-0.5968  se=0.6060  t=-0.98  n=301
+    2024 alone, relative                               b=-1.3066  se=0.6117  t=-2.14  n=331
+    2024 alone, absolute                               b=+0.7832  se=0.0991  t=+7.90  n=331
+
+  L4  can the two sources be compared cell by cell?
+    cells present in both: 788
+    correlation, female share of workforce    0.698
+    correlation, female share of managers     0.390
+    correlation, relative log odds            0.118
+    sampling noise, ignoring the survey weights         59% of cell variance; correlation ceiling 0.64
+    sampling noise, with the weighting design effect    99% of cell variance; correlation ceiling 0.09
+    median weighting design effect per cell: 1.61
+  Individual ACS cells are almost entirely sampling noise, so the weak cell-level
+  agreement is what noise alone would produce. The two sources can be compared
+  only in aggregate, where they agree on direction. The household-clustering
+  component is not included; it would add noise, not remove it.
