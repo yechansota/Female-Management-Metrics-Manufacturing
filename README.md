@@ -3,7 +3,7 @@
 ### *Are We Correctly Measuring the 'Female Share of Management'?*
 <p align="center">
   <strong>The Two Faces of Women's Managerial Representation in Manufacturing — Analyzing the Illusion Between Absolute Share and Relative Odds</strong><br>
-  <em>EEO-1 · QWI · QCEW  |  CBSA × NAICS-3  |  2022–2023 main cross-section, 2015–2021 comparison  |  2,779 local labor markets</em><br>
+  <em>EEO-1 · ACS · QWI · QCEW  |  CBSA × NAICS-3  |  2022–2023 main cross-section, 2015–2021 comparison  |  2,779 local labor markets</em><br>
 </p>
 
 ---
@@ -30,7 +30,7 @@ This study compares local industry cells in a single cross-section (2022–2023)
 
 Neither number is wrong. They answer different questions, and reporting practice overwhelmingly uses the first.
 
-The divergence survives a fixed-margin randomization test, five alternative estimands, industry and city influence checks, and a comparison of industries *within* the same labor market. **It does not survive disclosure suppression intact.** Once the cells the EEOC withholds are bounded, the sign of the relative measure is no longer identified — and a specific, low-cost change to the release rule would restore it.
+The divergence survives a fixed-margin randomization test, five alternative estimands, industry and city influence checks, a comparison of industries *within* the same labor market, and a second, independent data source — the Census Bureau's American Community Survey, including 2024 on its own. **It does not survive disclosure suppression intact.** Once the cells the EEOC withholds are bounded, the sign of the relative measure is no longer identified — and a specific, low-cost change to the release rule would restore it.
 
 ---
 
@@ -57,7 +57,11 @@ Where there are more women, there are **more** women managers — and **fewer wo
 
 **Figure 3. Positions are reallocated, not removed.** The odds ratio is split into its two components: the share of employed women who hold management, and the share of employed men who do.
 
-As female share rises, women's management rate **falls** (−0.833) while men's **rises** (+0.221). The overall managerial layer does not thin: management intensity is flat (−0.090, p = 0.21). That rules out the most obvious structural explanation — that female-intensive industries simply have flatter hierarchies. The positions exist; they are allocated differently by sex.
+As female share rises, women's management rate **falls** (−0.833) while men's **rises** (+0.221). The overall managerial layer does not thin: management intensity is flat (−0.090, p = 0.21). That rules out the most obvious structural explanation — that female-intensive industries simply have flatter hierarchies.
+
+**Part of the gap is about where people work in the plant.** EEO-1 also counts professionals, technicians, craft workers, operatives and laborers by sex. In male-dominated cells, the women who are there are less often on the production floor than men (42% versus 53%) — more often in office and technical roles closer to management. Where women are numerous, their job mix matches men's (51% versus 52%). Accounting for where each sex sits reduces the coefficient by 44% to 68%, and comparing managers only with the skilled tier directly below them halves it (−0.832 to −0.413, same cells). A smaller remainder is negative in every version. Because job-ladder position may itself be part of how the gap arises, this splits the association rather than isolating a "true" effect.
+
+**The decomposition depends on the source.** In the ACS (Section 5), the managerial layer *grows* where female share is higher and men's rate carries most of the divergence; women's rate falls clearly only in EEO-1. What both sources agree on: relative odds fall, men's management rate rises, and manager roles do not shrink.
 
 **What this means in practice.** A ten-point increase in female share goes with an 11% reduction in women's relative odds. Across the interquartile range (0.21 to 0.37) it is 16%: women's management rate moves from 8.7% to 7.7% while men's moves from 10.1% to 10.5%. In a median cell employing 254 women, that is roughly **22 versus 19.5 women in mid-management**. The illustration holds female employment fixed while moving the share, so it describes the cross-sectional association, not the effect of adding women.
 
@@ -69,7 +73,7 @@ As female share rises, women's management rate **falls** (−0.833) while men's 
 
 **Figure 4. Direction is stable; magnitude is not.** Five estimands are shown — four weighting choices and one size restriction — each answering a different question: the average local industry cell (unweighted, −1.175), the average worker (−0.606), the average woman (−0.519), the average managerial position (−0.421), and large cells only (−0.418). All are negative. Their magnitudes span a factor of three, and the association is strongest in small markets.
 
-The shaded bands are the sharp worst-case bounds under suppression, discussed in Section 5. The darker band holds at a continuity correction of 0.5 and stays below zero; the lighter band, at 0.25, **crosses zero**.
+The shaded bands are the sharp worst-case bounds under suppression, discussed in Section 6. The darker band holds at a continuity correction of 0.5 and stays below zero; the lighter band, at 0.25, **crosses zero**.
 
 This is why the claims here are about direction and shape, never about effect size.
 
@@ -90,6 +94,8 @@ Across 200 randomizations the slope centres on zero, with a 95% range of [−0.1
 | Challenge | Test | Result |
 |---|---|---|
 | **Is it a local labor market confounder?** | Industry and CBSA fixed effects together, comparing industries *within* the same labor market. Every market-level factor drops out. | **−0.999** (t = −5.76) against −1.114 on the same sample. About 90% survives. |
+| **Is it specific to EEO-1?** | The same analysis in the Census ACS, 2022–2024, built from individual survey responses (Section 5). | Absolute **+0.748**, relative **−1.599**; 2024 alone −1.307. Same direction. |
+| **Is it just job mix inside the plant?** | Control for each sex's share on the production floor and in skilled roles; compare managers with the tier directly below. | Coefficient falls 44%–68%; a smaller negative remainder in every version (Section 2). |
 | Does the continuity correction create it? | Uncorrected estimate; correction shift by female-share bin. | The observed sample has no zero cells, so the headline uses **no correction**. The correction accounts for 4% of the coefficient. |
 | Is it driven by one industry or city? | Leave-one-industry-out; leave-one-CBSA-out over the 20 largest. | [−1.254, −1.094] and [−1.240, −1.165]. |
 | Is the t-statistic a clustering artefact? | Homoskedastic, CBSA- and industry-clustered, wild cluster bootstrap over 21 industries. | SEs rise up to 1.9×. None of 499 bootstrap draws is as extreme (p < 0.002). |
@@ -100,7 +106,24 @@ Across 200 randomizations the slope centres on zero, with a 95% range of [−0.1
 
 ---
 
-### **5. What the Published Data Cannot Tell Us**
+### **5. A Second, Independent Source**
+
+Everything above comes from one dataset, so the obvious question is whether the pattern belongs to EEO-1 rather than to manufacturing. The American Community Survey asks workers directly. It is not subject to the EEOC's suppression rule, the 100-employee threshold, or employer job classification. The same analysis was rebuilt from IPUMS USA microdata for 2022–2024: private, employed wage and salary workers in manufacturing, grouped by metro area and industry — 937 groups in 178 metro areas, with a median of 136 respondents each. Managers are management occupations, excluding chief executives, plus first-line supervisors, to mirror EEO-1's first- and mid-level category.
+
+| Measure | EEO-1, 2022–23 | ACS, 2022–24 | ACS, 2024 alone |
+|---|---:|---:|---:|
+| Women's share of managers | +0.297*** | **+0.748*** (t = 12.4) | +0.783*** |
+| Women's relative odds of management | −1.175*** | **−1.599*** (t = −4.2) | −1.307** |
+
+The same divergence appears in a different source, and it holds in 2024 by itself. It also survives inverse-variance weighting (−0.970), employment weighting (−1.087), and a stricter definition counting management occupations only (−2.007). In the largest groups (200+ respondents, 301 groups) the estimate is negative but not distinguishable from zero (−0.597, t = −0.98) — the same pattern as in EEO-1, where the association is weakest in large markets.
+
+**The two sources cannot be compared group by group.** Across the 788 groups present in both, they agree on the female share of the workforce (correlation 0.70) but barely on the relative odds (0.12). Once the survey weights are accounted for, about 99% of the variation in an individual ACS group's estimate is sampling noise, which caps any possible correlation near 0.09. The weak agreement is what noise alone would produce. The sources can be compared only in aggregate, where they agree on direction. For the same reason, neither dataset supports claims about which particular metro area is worse.
+
+Two differences remain in the definitions themselves: ACS metro areas are where people live, not where they work, and IPUMS assigns them from public-use areas, so three small-manufacturing states (Montana, South Dakota, Vermont) drop out.
+
+---
+
+### **6. What the Published Data Cannot Tell Us**
 
 <p align="center"><img width="780" alt="fig7_suppression" src="https://github.com/user-attachments/assets/3107fc1e-af16-4e6f-9900-a10b89a6f573" /></p>
 
@@ -121,7 +144,7 @@ Under the current rule the sign is **not identified** at small corrections. Publ
 
 ---
 
-### **6. Data Integrity Audit**
+### **7. Data Integrity Audit**
 
 <p align="center"><img width="780" alt="fig6_regime_break" src="https://github.com/user-attachments/assets/bf39693b-5333-4d97-9142-41759f3c8871" /></p>
 
@@ -139,11 +162,12 @@ The main analysis therefore uses 2022–2023 only, and **no specification pools 
 | 6 | Suppression is non-random (Figure 6). | Sharp bounds. Cells where the total manager count is also withheld hold at most two managers and fail the size filter by construction. |
 | 7 | QCEW has no 3-digit detail for micropolitan areas, and its NAICS assignment differs from EEO-1's. | Demoted to a control. |
 | 8 | Accounting consistency. | Seven identities checked in all 3,054 cells: **zero violations**. |
-| 9 | Specification search: outcome, geography and sample split were revised after seeing results. | Stated plainly. The randomization test and the bounds are the defences, not the 2015–2021 estimate. |
+| 9 | ACS metro areas are places of residence assigned from public-use areas; three states drop out; individual ACS groups are mostly sampling noise. | Compared with EEO-1 only in aggregate. Group-level agreement reported with its noise ceiling (Section 5). |
+| 10 | Specification search: outcome, geography and sample split were revised after seeing results. | Stated plainly. The randomization test and the bounds are the defences, not the 2015–2021 estimate. |
 
 ---
 
-### **7. Full Results**
+### **8. Full Results**
 
 | Panel | Specification | Coefficient | n |
 |---|---|---:|---:|
@@ -161,8 +185,13 @@ The main analysis therefore uses 2022–2023 only, and **no specification pools 
 | I1 | 2015–2021 filing regime | −2.305*** (0.102) | 12,764 |
 | I | pre-specified mobility (monopsony) test | −0.055 (p = 0.49) | 2,779 |
 | J5 | economic magnitude, interquartile range of female share | odds ratio × 0.837 (−16%) | 2,779 |
+| K1 | + floor and skilled-pipeline shares of each sex (same-cell main: −0.707) | −0.223** (t = −2.20) | 1,027 |
+| K2 | managers per skilled tier below (same-cell main: −0.832) | −0.413*** (t = −3.02) | 1,136 |
+| **L1** | **ACS 2022–2024, absolute / relative** | **+0.748*** / −1.599*** | 937 |
+| L3 | ACS 2024 alone, relative | −1.307** (t = −2.14) | 331 |
+| L4 | ACS–EEO-1 agreement on relative odds, group level (noise ceiling ≈ 0.09) | correlation 0.118 | 788 |
 
-Fixed effects: NAICS-3 and Census region, except J3 (NAICS-3 and CBSA); the 2015–2021 regime adds year. Standard errors clustered by CBSA. Complete output in `results_log.txt`.
+Fixed effects: NAICS-3 and Census region, except J3 (NAICS-3 and CBSA); the 2015–2021 regime adds year. Standard errors clustered by CBSA (EEO-1) or metro area (ACS). ACS models control for group size only; the survey has no establishment information. Complete output in `results_log.txt`.
 
 **On precision.** Panel I1 reports t = −22.6. That is not evidence of certainty. These are cell means, so individual heterogeneity has been averaged away and the t-statistic is mechanically large. Aggregation shrinks variance and leaves bias untouched. The randomization test and the bounds carry the argument, not the p-values.
 
@@ -172,11 +201,11 @@ Fixed effects: NAICS-3 and Census region, except J3 (NAICS-3 and CBSA); the 2015
 
 ### **What the Data Support, and What They Do Not**
 
-**Supported.** A cross-sectional ecological association between the female share of a local industry workforce and women's relative managerial representation odds, at the CBSA × NAICS-3 level, in the observed cells.
+**Supported.** A cross-sectional ecological association between the female share of a local industry workforce and women's relative managerial representation odds, at the metro × industry level, in two independent sources. Roughly half to two-thirds of it reflects where women and men sit in the job ladder.
 
 **Not supported.** Promotion, advancement, backlash, or any individual-level transition. These are stock distributions, not flows. The term used throughout is *representation odds*, not *access*. Kanter's tokenism and the Blalock–Yoder group-threat model both predict change at a threshold; this is a cross-section and tests neither.
 
-**Not identified.** The magnitude, which ranges from about −0.40 to −2.31 across estimands, instruments and filing regimes — and, under the current suppression rule, the sign.
+**Not identified.** The magnitude, which ranges from about −0.40 to −2.31 across estimands, instruments and filing regimes — and, under the current suppression rule, the sign in EEO-1. Which component moves (women's rate or men's) also differs between sources, and neither source supports claims about individual metro areas.
 
 **Unexplained.** Establishment size is the second-strongest predictor (−0.14 to −0.17), stable across the filing regimes, but it shrinks by 35% in large cells, so part of it is selection. No mechanism is proposed.
 
@@ -191,8 +220,8 @@ Fixed effects: NAICS-3 and Census region, except J3 (NAICS-3 and CBSA); the 2015
 | 3 | `fig3_decomposition.png` | Management rate by sex; overall intensity flat | 2 |
 | 4 | `fig4_estimand_bounds.png` | Five estimands against the suppression bounds | 3 |
 | 5 | `fig5_randomization.png` | Fixed-margin randomization null versus observed | 4 |
-| 6 | `fig7_suppression.png` | Share of cells withheld, by cell size | 5 |
-| 7 | `fig6_regime_break.png` | Employees per reporting unit, 2015–2023 | 6 |
+| 6 | `fig7_suppression.png` | Share of cells withheld, by cell size | 6 |
+| 7 | `fig6_regime_break.png` | Employees per reporting unit, 2015–2023 | 7 |
 
 ---
 
@@ -200,11 +229,12 @@ Fixed effects: NAICS-3 and Census region, except J3 (NAICS-3 and CBSA); the 2015
 
 | File | Description |
 |---|---|
-| `Gender_Management_Gap.py` | Analysis, Panels A–J. Writes `results_log.txt`. Runs from the shipped data alone. |
+| `Gender_Management_Gap.py` | Analysis, Panels A–L. Writes `results_log.txt`. Runs from the shipped data alone. |
 | `make_figures.py` | Builds all seven figures. Independent of the analysis script. |
 | `build_dataset.py` | Source pipeline from raw EEO-1, QWI, QCEW and OMB files. |
 | `gender_mgmt_cbsa_2023.csv.zip` | Main cross-section: 2,779 observed cells plus 275 carrying suppression bounds. |
 | `gender_mgmt_panel_2015_2021.csv.zip` | 2015–2021 comparison panel, 12,764 cell-years. |
+| `acs_mfg_cells_2022_2024.csv.zip` | ACS metro × industry × year aggregates (weighted and unweighted counts). No person-level records. |
 | `results_log.txt` | Complete regression output. |
 | `fig1` … `fig7` `.png` | The seven figures above. |
 | `Technical_Documentation.md` | Definitions, schemas, estimator, diagnostics, limitations, withdrawn claims. |
@@ -226,6 +256,9 @@ python make_figures.py            # -> fig1 ... fig7
 | Quarterly Workforce Indicators, 2023 | U.S. Census Bureau, LEHD | Worker flows; independent female-share measure |
 | QCEW Annual Averages, 2023 | U.S. Bureau of Labor Statistics | Coverage ratio, establishment density |
 | CBSA Delineation File, July 2023 | U.S. OMB / Census Bureau | Geographic crosswalk |
+| American Community Survey, 2022–2024 (IPUMS USA) | U.S. Census Bureau via IPUMS | Independent replication from individual responses |
+
+ACS data: Steven Ruggles, Sarah Flood, Matthew Sobek, Daniel Backman, Grace Cooper, Julia A. Rivera Drew, Stephanie Richards, Renae Rodgers, Jonathan Schroeder, and Kari C.W. Williams. *IPUMS USA: Version 16.0* [dataset]. Minneapolis, MN: IPUMS, 2025. https://doi.org/10.18128/D010.V16.0
 
 ---
 
