@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+type: software
+title: "Reinterpreting Women's Leadership Metrics: Are We Correctly Measuring the Female Share of Management?"
+abstract: "Compares the female share of management with the relative odds of women holding management positions in U.S. manufacturing across 2,779 local labor markets (CBSA x NAICS-3), using EEO-1, ACS, QWI and QCEW data."
+authors:
+  - family-names: Kim
+    given-names: Yechan
+    alias: Sean Kim
+repository-code: "https://github.com/yechansota/Female-Management-Metrics-Manufacturing"
+license: MIT
+keywords:
+  - gender gap
+  - women in management
+  - measurement
+  - manufacturing
+  - EEO-1
